@@ -1,4 +1,12 @@
-import { TipoIva, LineaTicket, ResultadoLineaTicket } from "./model";
+import {
+  TipoIva,
+  LineaTicket,
+  ResultadoLineaTicket,
+  ResultadoTotalTicket,
+  TotalPorTipoIva,
+  arrayTipoIva,
+} from "./model";
+
 
 const redondearNumero = (numero: number) => Number(numero.toFixed(2));
 
@@ -41,13 +49,15 @@ export const obtenerPrecioSinIva = (
     throw new Error("Los parámetros ingresados no son correctos");
   }
 
-  const iva = obtenerPorcetajeDeIva(tipoDeIva);
-  const precioSinIva = precio - (precio * iva) / 100;
+  const ivaPorcentaje = obtenerPorcetajeDeIva(tipoDeIva);
+  const iva = (precio * ivaPorcentaje) / 100;
+  const precioSinIva = precio - iva;
   const precioSinIvaRedondeado = redondearNumero(precioSinIva);
+
   return precioSinIvaRedondeado;
 };
 
-export const resultadoLineaTicket = (
+export const obtenerResultadoLineaTicket = (
   lineasTicket: LineaTicket[]
 ): ResultadoLineaTicket[] => {
   let resultadoLineasTicket: ResultadoLineaTicket[] = [];
@@ -56,22 +66,89 @@ export const resultadoLineaTicket = (
     throw new Error("Los parámetros ingresados no son correctos");
   }
 
+  
+
   for (let i = 0; i < lineasTicket.length; i++) {
-    const { producto, cantidad } = lineasTicket[i];
+
+
+    const { producto, cantidad,  } = lineasTicket[i];
+
+    const precioSinIva = redondearNumero(
+      obtenerPrecioSinIva(producto.precio, producto.tipoIva) * cantidad
+    );
+    const precioConIva = redondearNumero(producto.precio * cantidad);
 
     resultadoLineasTicket = [
       ...resultadoLineasTicket,
       {
         nombre: producto.nombre,
         cantidad: cantidad,
-        precionSinIva: obtenerPrecioSinIva(producto.precio, producto.tipoIva),
+        precioSinIva,
         tipoIva: producto.tipoIva,
-        precioConIva: producto.precio,
+        precioConIva,
       },
     ];
   }
 
   return resultadoLineasTicket;
+};
 
-  //TODO: Implementar Tests para la funcion
+export const obtenerResultadoTotalTicket = (
+  lineasTicket: ResultadoLineaTicket[]
+): ResultadoTotalTicket => {
+  if (!lineasTicket) {
+    throw new Error("Los parámetros introducidos no son correctos");
+  }
+
+  const totalSinIva = lineasTicket.reduce((acc, producto) => {
+    acc = acc + producto.precioSinIva;
+    return acc;
+  }, 0);
+
+  const totalConIva = lineasTicket.reduce((acc, producto) => {
+    acc = acc + producto.precioConIva;
+    return acc;
+  }, 0);
+
+  const totalIva = redondearNumero(totalConIva - totalSinIva);
+
+  return {
+    totalSinIva : redondearNumero(totalSinIva),
+    totalConIva: redondearNumero(totalConIva),
+    totalIva,
+  };
+};
+
+export const obtenerTotalPorTipoDeIva = (
+  resultadoLineaTicket: ResultadoLineaTicket[]
+): TotalPorTipoIva[] => {
+  if (!resultadoLineaTicket || !arrayTipoIva) {
+    throw new Error("Los parámetros ingresados son incorrectos");
+  }
+
+  let totalPorTipoIva: TotalPorTipoIva[] = [];
+
+  resultadoLineaTicket.forEach((lineaTicket) => {
+    const index = totalPorTipoIva.findIndex(
+      (porTipoIva) => porTipoIva.tipoIva === lineaTicket.tipoIva
+    );
+
+    if (index !== -1) {
+      totalPorTipoIva[index].cuantia += redondearNumero(
+        lineaTicket.precioConIva - lineaTicket.precioSinIva
+      );
+    } else {
+      totalPorTipoIva = [
+        ...totalPorTipoIva,
+        {
+          tipoIva: lineaTicket.tipoIva,
+          cuantia: redondearNumero(
+            lineaTicket.precioConIva - lineaTicket.precioSinIva
+          ),
+        },
+      ];
+    }
+  });
+
+  return totalPorTipoIva;
 };

@@ -1,5 +1,3 @@
-
-
 /* 
 Tipo de IVA |	Porcentaje	|Bienes y servicios que graba
 General      |	21% |	Más común y afecta a la mayoría de productos y servicios: electrónica, ropa, automóviles, mobiliario, etc.
@@ -17,6 +15,17 @@ export type TipoIva =
   | "superreducidoC"
   | "sinIva";
 
+export const arrayTipoIva: TipoIva[] = [
+  "general",
+  "reducido",
+  "superreducidoA",
+  "superreducidoB",
+  "superreducidoC",
+  "sinIva",
+];
+
+
+
 export interface Producto {
   nombre: string;
   precio: number;
@@ -31,7 +40,7 @@ export interface LineaTicket {
 export interface ResultadoLineaTicket {
   nombre: string;
   cantidad: number;
-  precionSinIva: number;
+  precioSinIva: number;
   tipoIva: TipoIva;
   precioConIva: number;
 }
@@ -44,7 +53,7 @@ export interface ResultadoTotalTicket {
 
 export interface TotalPorTipoIva {
   tipoIva: TipoIva;
-  cuantia : number;
+  cuantia: number;
 }
 
 export interface TicketFinal {
