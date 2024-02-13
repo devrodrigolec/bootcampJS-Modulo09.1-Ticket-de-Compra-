@@ -4,9 +4,7 @@ import {
   ResultadoLineaTicket,
   ResultadoTotalTicket,
   TotalPorTipoIva,
-  arrayTipoIva,
 } from "./model";
-
 
 const redondearNumero = (numero: number) => Number(numero.toFixed(2));
 
@@ -66,12 +64,8 @@ export const obtenerResultadoLineaTicket = (
     throw new Error("Los parámetros ingresados no son correctos");
   }
 
-  
-
   for (let i = 0; i < lineasTicket.length; i++) {
-
-
-    const { producto, cantidad,  } = lineasTicket[i];
+    const { producto, cantidad } = lineasTicket[i];
 
     const precioSinIva = redondearNumero(
       obtenerPrecioSinIva(producto.precio, producto.tipoIva) * cantidad
@@ -110,19 +104,23 @@ export const obtenerResultadoTotalTicket = (
     return acc;
   }, 0);
 
-  const totalIva = redondearNumero(totalConIva - totalSinIva);
+  const totalIva = lineasTicket.reduce((acc, producto) => {
+    const iva = producto.precioConIva - producto.precioSinIva;
+    acc = acc + iva;
+    return acc
+  }, 0)
 
   return {
-    totalSinIva : redondearNumero(totalSinIva),
+    totalSinIva: redondearNumero(totalSinIva),
     totalConIva: redondearNumero(totalConIva),
-    totalIva,
+    totalIva : redondearNumero(totalIva),
   };
 };
 
 export const obtenerTotalPorTipoDeIva = (
   resultadoLineaTicket: ResultadoLineaTicket[]
 ): TotalPorTipoIva[] => {
-  if (!resultadoLineaTicket || !arrayTipoIva) {
+  if (!resultadoLineaTicket) {
     throw new Error("Los parámetros ingresados son incorrectos");
   }
 
@@ -134,8 +132,10 @@ export const obtenerTotalPorTipoDeIva = (
     );
 
     if (index !== -1) {
-      totalPorTipoIva[index].cuantia += redondearNumero(
-        lineaTicket.precioConIva - lineaTicket.precioSinIva
+      totalPorTipoIva[index].cuantia = redondearNumero(
+        totalPorTipoIva[index].cuantia +
+          lineaTicket.precioConIva -
+          lineaTicket.precioSinIva
       );
     } else {
       totalPorTipoIva = [

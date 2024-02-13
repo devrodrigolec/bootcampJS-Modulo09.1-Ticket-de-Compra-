@@ -5,12 +5,7 @@ import {
   obtenerResultadoLineaTicket,
   obtenerTotalPorTipoDeIva,
 } from "./calcula-ticket.helpers";
-import {
-  LineaTicket,
-  ResultadoTotalTicket,
-  TotalPorTipoIva,
-  arrayTipoIva,
-} from "./model";
+import { LineaTicket, ResultadoLineaTicket, ResultadoTotalTicket, TotalPorTipoIva } from './model';
 
 describe("obtenerPorcentajeDeIva", () => {
   it("Si tipoDeIVa es undefined, debe retornar throw Error", () => {
@@ -43,9 +38,9 @@ describe("obtenerPorcentajeDeIva", () => {
     ["sinIva", 0],
   ])(
     "Si tipo de IVA es %s, debe retornar %s",
-    (tipoDeIVa, resultadoEsperado) => {
+    (tipoDeIVa : any , resultadoEsperado : number ) => {
       //Act
-      const resultado = obtenerPorcetajeDeIva(tipoDeIVa);
+      const resultado : number = obtenerPorcetajeDeIva(tipoDeIVa);
       //Assert
       expect(resultado).toBe(resultadoEsperado);
     }
@@ -74,9 +69,9 @@ describe("obtenerPrecioSinIva", () => {
     [3, "sinIva", 3],
   ])(
     "Si el precio es %s, el tipo de Iva es %s, el precio sin iva debe ser %s",
-    (precio, tipoDeIva, resultadoEsperado) => {
+    (precio: number, tipoDeIva : any, resultadoEsperado : number) => {
       //ACt
-      const resultado = obtenerPrecioSinIva(precio, tipoDeIva);
+      const resultado : number = obtenerPrecioSinIva(precio, tipoDeIva);
       //Assert
       expect(resultado).toBe(resultadoEsperado);
     }
@@ -107,16 +102,16 @@ describe("resultadosLineasTicket", () => {
 
   it('Si recibe [{producto:{ nombre: "Legumbres",precio: 2,tipoIva: "general"},  cantidad: 2 }] debe retornar [{nombre: "Legumbres, cantidad: 2, precioSinIva: 1.58, tipoIva: "general", precioConIva: 2}]', () => {
     //Arrange
-    const lineaTicket = [
+    const lineaTicket : LineaTicket[] = [
       {
         producto: { nombre: "Legumbres", precio: 2, tipoIva: "general" },
         cantidad: 2,
       },
     ];
     //Act
-    const resultado = obtenerResultadoLineaTicket(lineaTicket);
+    const resultado : ResultadoLineaTicket[] = obtenerResultadoLineaTicket(lineaTicket);
     //Assert
-    const resultadoEsperado = [
+    const resultadoEsperado : ResultadoLineaTicket[] = [
       {
         nombre: "Legumbres",
         cantidad: 2,
@@ -130,7 +125,7 @@ describe("resultadosLineasTicket", () => {
 
   it('Si recibe [{producto:{ nombre: "Perfume",precio: 20,tipoIva: "general"},  cantidad: 3 },{producto:{ nombre: "Leche",precio: 1,tipoIva: "superreducidoC"},  cantidad: 6 }] debe retornar [{nombre: "Perfume", cantidad: 3, precioSinIva: 47.62, tipoIva: "general", precioConIva: 57},{nombre: "Leche", cantidad: 6, precioSinIva: 6, tipoIva: "superreducidoC", precioConIva: 6}]', () => {
     //Arrange
-    const lineaTicket = [
+    const lineaTicket : LineaTicket[] = [
       {
         producto: { nombre: "Perfume", precio: 20, tipoIva: "general" },
         cantidad: 3,
@@ -164,7 +159,7 @@ describe("resultadosLineasTicket", () => {
 
   it('Si recibe [{producto:{ nombre: "Lasaña",precio: 5,tipoIva: "superreducidoA"},  cantidad: 1 }] debe retornar [{nombre: "Lasaña", cantidad: 1, precioSinIva: 4.76, tipoIva: "superreducidoA", precioConIva: 5}]', () => {
     //Arrange
-    const lineaTicket = [
+    const lineaTicket : LineaTicket[] = [
       {
         producto: { nombre: "Lasaña", precio: 5, tipoIva: "superreducidoA" },
         cantidad: 1,
@@ -188,7 +183,7 @@ describe("resultadosLineasTicket", () => {
   // Caso de prueba 4: Una línea de ticket con productos de diferentes tipos de IVA
   it('Si recibe [{producto:{ nombre: "Legumbres",precio: 2,tipoIva: "general"},  cantidad: 2 },{producto:{ nombre: "Perfume",precio: 20,tipoIva: "general"},  cantidad: 3 },{producto:{ nombre: "Leche",precio: 1,tipoIva: "superreducidoC"},  cantidad: 6 },{producto:{ nombre: "Lasaña",precio: 5,tipoIva: "superreducidoA"},  cantidad: 1 }] debe retornar [{nombre: "Legumbres", cantidad: 2, precioSinIva: 1.580, tipoIva: "general", precioConIva: 2},{nombre: "Perfume", cantidad: 3, precioSinIva: 47.4, tipoIva: "general", precioConIva: 57},{nombre: "Leche", cantidad: 6, precioSinIva: 6, tipoIva: "superreducidoC", precioConIva: 6},{nombre: "Lasaña", cantidad: 1, precioSinIva: 4.76, tipoIva: "superreducidoA", precioConIva: 5}]', () => {
     //Arrange
-    const lineaTicket = [
+    const lineaTicket : LineaTicket[] = [
       {
         producto: { nombre: "Legumbres", precio: 2, tipoIva: "general" },
         cantidad: 2,
@@ -277,7 +272,7 @@ describe("obtenerResultadoTotalTicket", () => {
 
   it("Si recibe un ticket, debe devolver los totales de con IVA, sin IVA y el total del IVA", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket :ResultadoLineaTicket[]= [
       {
         nombre: "Legumbres",
         cantidad: 2,
@@ -298,7 +293,7 @@ describe("obtenerResultadoTotalTicket", () => {
   });
   it("Si recibe un ticket, debe devolver los totales de con IVA, sin IVA y el total del IVA", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket : ResultadoLineaTicket[]= [
       {
         nombre: "Perfume",
         cantidad: 3,
@@ -326,7 +321,7 @@ describe("obtenerResultadoTotalTicket", () => {
   });
   it("Si recibe un ticket, debe devolver los totales de con IVA, sin IVA y el total del IVA", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket : ResultadoLineaTicket[]= [
       {
         nombre: "Legumbres",
         cantidad: 2,
@@ -386,27 +381,25 @@ describe("totalPorTipoDeIva", () => {
   it("Si recibe undefined debe retornar throw new Error", () => {
     //Arrange
     const resultadoLineaTicket: any = undefined;
-    const arrayTipoIva: any = undefined;
+
     //Act
-    const resultado = () =>
-      obtenerTotalPorTipoDeIva(resultadoLineaTicket, arrayTipoIva);
+    const resultado = () => obtenerTotalPorTipoDeIva(resultadoLineaTicket);
     //Assert
     expect(resultado).toThrowError("Los parámetros ingresados son incorrectos");
   });
   it("Si recibe null debe retornar throw new Error", () => {
     //Arrange
     const resultadoLineaTicket: any = null;
-    const arrayTipoIva: any = null;
+   
     //Act
-    const resultado = () =>
-      obtenerTotalPorTipoDeIva(resultadoLineaTicket, arrayTipoIva);
+    const resultado = () => obtenerTotalPorTipoDeIva(resultadoLineaTicket);
     //Assert
     expect(resultado).toThrowError("Los parámetros ingresados son incorrectos");
   });
 
   it("si recibe un array, debe retornar un desglose de cada iva con la suma total del mismo", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket : ResultadoLineaTicket[] = [
       {
         nombre: "Legumbres",
         cantidad: 2,
@@ -416,7 +409,7 @@ describe("totalPorTipoDeIva", () => {
       },
     ];
     //Act
-    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket, arrayTipoIva);
+    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket);
     //Assert
     const resultadoEsperado: TotalPorTipoIva[] = [
       {
@@ -428,7 +421,7 @@ describe("totalPorTipoDeIva", () => {
   });
   it("si recibe un array, debe retornar un desglose de cada iva con la suma total del mismo", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket : ResultadoLineaTicket[] = [
       {
         nombre: "Perfume",
         cantidad: 3,
@@ -445,7 +438,7 @@ describe("totalPorTipoDeIva", () => {
       },
     ];
     //Act
-    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket, arrayTipoIva);
+    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket);
     //Assert
     const resultadoEsperado: TotalPorTipoIva[] = [
       {
@@ -461,7 +454,7 @@ describe("totalPorTipoDeIva", () => {
   });
   it("si recibe un array, debe retornar un desglose de cada iva con la suma total del mismo", () => {
     //Arrange
-    const resultadoLineaTicket = [
+    const resultadoLineaTicket : ResultadoLineaTicket[] = [
       {
         nombre: "Legumbres",
         cantidad: 2,
@@ -492,7 +485,7 @@ describe("totalPorTipoDeIva", () => {
       },
     ];
     //Act
-    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket, arrayTipoIva);
+    const resultado = obtenerTotalPorTipoDeIva(resultadoLineaTicket);
     //Assert
     const resultadoEsperado: TotalPorTipoIva[] = [
       {
